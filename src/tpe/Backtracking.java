@@ -41,20 +41,20 @@ public class Backtracking {
     	for (Processor p : procesadores) {
         	asignacionActual.put(p, new ArrayList<>());
         }
-       _asignarTareasBacktraking(asignacionActual, 0);
+       _asignarTareasBacktraking(asignacionActual, tareas);
             return solucion;
     }
 
-    private void _asignarTareasBacktraking(Map<Processor, List<MyTask>> asignacionActual, int index) {
+    private void _asignarTareasBacktraking(Map<Processor, List<MyTask>> asignacionActual, List<MyTask> tareas) {
         
-        if (index == tareas.size()) {
+        if (tareas.isEmpty()) {
             int tiempoActual = calcularTiempoMaximo(asignacionActual);
             if (tiempoActual < mejorTiempo) {
                 mejorTiempo = tiempoActual;
                 solucion = copiarAsignacion(asignacionActual);
             }
         } else {
-            MyTask tarea = tareas.get(index);
+            MyTask tarea = tareas.remove(0);
             for (Processor p : procesadores) {
                 if (esValida(tarea, asignacionActual, p) ){
                     asignacionActual.get(p).add(tarea);
@@ -63,6 +63,7 @@ public class Backtracking {
                     asignacionActual.get(p).remove(asignacionActual.get(p).size() - 1);
                 }
             }
+            tareas.add(0,tarea);
         }
     }
    
