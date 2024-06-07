@@ -59,7 +59,7 @@ public class Backtracking {
                 if (esValida(tarea, asignacionActual, p) ){
                     asignacionActual.get(p).add(tarea);
                     estadosGenerados++; 
-                    _asignarTareasBacktraking(asignacionActual, index + 1);
+                    _asignarTareasBacktraking(asignacionActual, tareas);
                     asignacionActual.get(p).remove(asignacionActual.get(p).size() - 1);
                 }
             }
