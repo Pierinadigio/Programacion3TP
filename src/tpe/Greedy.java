@@ -15,6 +15,10 @@ public class Greedy {
     private int tiempoMaxNoRefrigerado;
     private int candidatosConsiderados;
     private int mejorTiempo;
+<<<<<<< HEAD
+=======
+    private int maxCriticas;
+>>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
 
     public Greedy(String pathProcesadores, String pathTareas, int tiempoMaxNoRefrigerado) {
         CSVReader reader = new CSVReader();
@@ -24,6 +28,10 @@ public class Greedy {
         this.tareas = reader.getTareasPorPrioridad().getTasksInPriorityOrder();
         this.tiempoMaxNoRefrigerado = tiempoMaxNoRefrigerado;
         this.candidatosConsiderados = 0;
+<<<<<<< HEAD
+=======
+        this.maxCriticas = 2;
+>>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
         this.mejorTiempo = Integer.MAX_VALUE;
         this.solucion = new HashMap<>();
         for (Processor p : procesadores) {
@@ -71,7 +79,11 @@ public class Greedy {
         if (!processor.isRefrigerado() && processor.getTiempoTotalEjecucion() + task.getTiempoEjecucion() > X) {
             return false;
         }
+<<<<<<< HEAD
         if (task.isCritica() && processor.hasCriticalTask()) {
+=======
+        if (task.isCritica() && processor.hasCriticalTask(maxCriticas)) {
+>>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
             return false;
         }
         return true;

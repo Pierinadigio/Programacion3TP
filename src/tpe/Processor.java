@@ -62,6 +62,7 @@ public class Processor {
         return total;
     }
 	
+<<<<<<< HEAD
 	public boolean hasCriticalTask() {
         for (MyTask task : tareas) {
             if (task.isCritica()) {
@@ -69,6 +70,20 @@ public class Processor {
             }
         }
         return false;
+=======
+	public boolean hasCriticalTask(int n) {
+		int count = 0;
+		for (MyTask task : tareas) {
+            if (task.isCritica()) {
+                count ++;
+            }
+        }
+		if (count >= n) {
+        return true;
+		}else {
+			return false;
+		}
+>>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
     }
 
    
