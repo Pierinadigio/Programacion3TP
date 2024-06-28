@@ -41,7 +41,6 @@ public class Backtracking {
     	for (Processor p : procesadores) {
         	asignacionActual.put(p, new ArrayList<>());
         }
-<<<<<<< HEAD
        _asignarTareasBacktraking(asignacionActual, 0);
             return solucion;
     }
@@ -49,26 +48,13 @@ public class Backtracking {
     private void _asignarTareasBacktraking(Map<Processor, List<MyTask>> asignacionActual, int index) {
         
         if (index == tareas.size()) {
-=======
-       _asignarTareasBacktraking(asignacionActual, tareas);
-            return solucion;
-    }
-
-    private void _asignarTareasBacktraking(Map<Processor, List<MyTask>> asignacionActual, List<MyTask> tareas) {
-        
-        if (tareas.isEmpty()) {
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
             int tiempoActual = calcularTiempoMaximo(asignacionActual);
             if (tiempoActual < mejorTiempo) {
                 mejorTiempo = tiempoActual;
                 solucion = copiarAsignacion(asignacionActual);
             }
         } else {
-<<<<<<< HEAD
             MyTask tarea = tareas.get(index);
-=======
-            MyTask tarea = tareas.remove(0);
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
             for (Processor p : procesadores) {
                 if (esValida(tarea, asignacionActual, p) ){
                     asignacionActual.get(p).add(tarea);
@@ -77,18 +63,10 @@ public class Backtracking {
                     _asignarTareasBacktraking(asignacionActual, index + 1);
                     asignacionActual.get(p).remove(asignacionActual.get(p).size() - 1);
                 }
-            }
 =======
                     _asignarTareasBacktraking(asignacionActual, tareas);
                     asignacionActual.get(p).remove(asignacionActual.get(p).size() - 1);
                 }
-            }
-            tareas.add(0,tarea);
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
-        }
-    }
-   
-    private boolean esValida(MyTask tarea, Map<Processor, List<MyTask>> asignacion, Processor p) {
 <<<<<<< HEAD
         int countCritica = 0;
         int tiempoTotal = 0;
@@ -101,7 +79,6 @@ public class Backtracking {
         if (tarea.isCritica() && countCritica >= maxCriticas ) {
             return false;
         }
-        if (!p.isRefrigerado() && (tiempoTotal + tarea.getTiempoEjecucion() > tiempoMaxNoRefrigerado)) {
             return false;
         }
         return true;
@@ -118,18 +95,6 @@ public class Backtracking {
          return true;
      }    
 >>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
-    
-    private Map<Processor, List<MyTask>> copiarAsignacion(Map<Processor, List<MyTask>> original) {
-        Map<Processor, List<MyTask>> copia = new HashMap<>();
-        for (Map.Entry<Processor, List<MyTask>> entry : original.entrySet()) {
-            Processor procesador = entry.getKey();
-            List<MyTask> tareasOriginales = entry.getValue();
-            List<MyTask> tareasCopia = new ArrayList<>(tareasOriginales); 
-            copia.put(procesador, tareasCopia);
-        }
-        return copia;
-    }
-    
     public int calcularTiempoMaximo(Map<Processor, List<MyTask>> asignacion) {
         int maxTiempo = 0;
         for (Map.Entry<Processor, List<MyTask>> entry : asignacion.entrySet()) {
