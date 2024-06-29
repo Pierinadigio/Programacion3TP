@@ -23,7 +23,7 @@ public class Main {
      
       
     //----------------------SEGUNDA PARTE TP---------------------------------------------------------------//
-     int tiempoMaxNoRefrigerado = 200;
+     int tiempoMaxNoRefrigerado = 100;
       
      //Servicio4
       System.out.println("\nServicio 4: Backtracking: Solucion Obtenida");
