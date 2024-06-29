@@ -43,10 +43,6 @@ public class Greedy {
         return solucion;
     }
 
-    public boolean esSolucion(Estado e) {
-        return e.getTiempoFinalEjecucion() < this.solucion.getTiempoFinalEjecucion();
-    }
-
     private Processor getBestProcessor(Estado estado, MyTask tarea) {
         HashMap<String,Processor> procesadores = estado.getProcesadores();
         Processor bestProcessor = null;
