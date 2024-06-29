@@ -59,4 +59,7 @@ public class MyTask implements Comparable<MyTask>{
 	    public int compareTo(MyTask other) {
 	        return Integer.compare(this.nivelPrioridad, other.nivelPrioridad);
 	    }
+		
+		
+
 	}

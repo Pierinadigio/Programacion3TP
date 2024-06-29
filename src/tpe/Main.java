@@ -23,15 +23,14 @@ public class Main {
      
       
     //----------------------SEGUNDA PARTE TP---------------------------------------------------------------//
+     int tiempoMaxNoRefrigerado = 200;
       
-      //Servicio4
-      int tiempoMaxNoRefrigerado = 80;
+     //Servicio4
       System.out.println("\nServicio 4: Backtracking: Solucion Obtenida");
       serv.servicio4(tiempoMaxNoRefrigerado);
 	  
-
       
-	 //Servicio5
+	  //Servicio5
 	  System.out.println("\nServicio 5: Greedy: Solucion Obtenida");
 	  serv.servicio5(tiempoMaxNoRefrigerado);
 	 

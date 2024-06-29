@@ -75,12 +75,15 @@ public class CSVReader {
                 Processor procesador = new Processor(id, codigo, refrigerado, anio);
                 processors.put(id, procesador);
                 procesadores.add(procesador);
+                
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
+    
+       
     public HashMap<String, MyTask> getTasks() {
         return new HashMap <String, MyTask> (tasks);
     }

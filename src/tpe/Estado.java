@@ -15,10 +15,7 @@ public class Estado {
         this.estadosgenerados = null;
     }
     
-    //Constructor para poder guardar la mejor solucion y evitar que los cambios realizados en el estado que se pasa como parametro, modifique
-    //la mejor solución.
-    
-    public Estado(Estado estado) {
+   public Estado(Estado estado) {
         this.procesadores = new HashMap<>();
         for (Entry<String, Processor> entry : estado.procesadores.entrySet()) {
             this.procesadores.put(entry.getKey(), new Processor(entry.getValue()));

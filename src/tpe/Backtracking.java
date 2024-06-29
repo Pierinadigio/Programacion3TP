@@ -33,13 +33,12 @@ public class Backtracking {
         if (mejorSolucion == null) {
             return null;
         }
-
         this.mejorSolucion.setEstadosGenerados(estadoInicial.getEstadosGenerados());
         return mejorSolucion; 
     }
 
-    private void asignarTareasBacktraking(Estado estado, LinkedList<MyTask> tareasDisponibles) {
-        if(tareas.size()== 0){ //Es una posible solucion, ahora tengo que ir guardando la mejor solucion
+    private void asignarTareasBacktraking(Estado estado, LinkedList<MyTask> tareas) {
+        if(tareas.size()== 0){ 
         	if(this.mejorSolucion == null || estado.getTiempoFinalEjecucion()< this.mejorSolucion.getTiempoFinalEjecucion()) {
         		this.mejorSolucion = new Solucion(estado);
         	}
@@ -56,72 +55,10 @@ public class Backtracking {
                 (this.mejorSolucion == null || (estado.getTiempoFinalEjecucion()< this.mejorSolucion.getTiempoFinalEjecucion())) && 
                 ((!estado.esRefrigerado(procesador) && estado.getTiempoProcesador(procesador)<= tiempoMaxNoRefrigerado) || estado.esRefrigerado(procesador))) {
 					estado.incrementarEstados();
-					asignarTareasBacktraking(estado, tareasDisponibles); 
+					asignarTareasBacktraking(estado, tareas); 
 				}
 				tareas.addFirst(t);
 				estado.removeTarea(procesador,tiempoFinalAnterior);
-
-       _asignarTareasBacktraking(asignacionActual, 0);
-            return solucion;
-    }
-
-    private void _asignarTareasBacktraking(Map<Processor, List<MyTask>> asignacionActual, int index) {
-        
-        if (index == tareas.size()) {
-            int tiempoActual = calcularTiempoMaximo(asignacionActual);
-            if (tiempoActual < mejorTiempo) {
-                mejorTiempo = tiempoActual;
-                solucion = copiarAsignacion(asignacionActual);
-            }
-        } else {
-            MyTask tarea = tareas.get(index);
-            for (Processor p : procesadores) {
-                if (esValida(tarea, asignacionActual, p) ){
-                    asignacionActual.get(p).add(tarea);
-                    estadosGenerados++; 
-
-                    _asignarTareasBacktraking(asignacionActual, index + 1);
-                    asignacionActual.get(p).remove(asignacionActual.get(p).size() - 1);
-                }
-
-                    _asignarTareasBacktraking(asignacionActual, tareas);
-                    asignacionActual.get(p).remove(asignacionActual.get(p).size() - 1);
-                }
-
-        int countCritica = 0;
-        int tiempoTotal = 0;
-        for (MyTask t : asignacion.get(p)) {
-            if (t.isCritica()) {
-                countCritica++;
-            }
-            tiempoTotal += t.getTiempoEjecucion();
-        }
-        if (tarea.isCritica() && countCritica >= maxCriticas ) {
-            return false;
-        }
-            return false;
-        }
-        return true;
-    }    
-
-        int tiempoTotal = p.getTiempoTotalEjecucion(asignacion.get(p));
-    
-         if (tarea.isCritica() && p.hasCriticalTask(maxCriticas) ) {
-             return false;
-         }
-         if (!p.isRefrigerado() && (tiempoTotal + tarea.getTiempoEjecucion() > tiempoMaxNoRefrigerado)) {
-             return false;
-         }
-         return true;
-     }    
-
-    public int calcularTiempoMaximo(Map<Processor, List<MyTask>> asignacion) {
-        int maxTiempo = 0;
-        for (Map.Entry<Processor, List<MyTask>> entry : asignacion.entrySet()) {
-           	int totalTiempo = entry.getKey().getTiempoTotalEjecucion(entry.getValue());
-        	  if (totalTiempo > maxTiempo) {
-            	maxTiempo = totalTiempo;
-
             }
         }
     }

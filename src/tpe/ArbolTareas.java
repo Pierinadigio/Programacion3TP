@@ -57,7 +57,7 @@ public class ArbolTareas {
     }
     
     public List<MyTask> getTasksInPriorityOrder() {
-        List<MyTask> result = new ArrayList<>();
+    	List<MyTask> result = new ArrayList<>();
         getTasksInPriorityOrderRec(root, result);
         return result;
     }
@@ -70,4 +70,6 @@ public class ArbolTareas {
             
         }
     }
+   
+    
 }
