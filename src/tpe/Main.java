@@ -22,11 +22,10 @@ public class Main {
       System.out.println("\nServicio3: Tareas por PRIORIDAD \n" + listadoTareas(tareasPorPrioridad));
      
       
-<<<<<<< HEAD
-    //----------------------PRIMERA PARTE TP---------------------------------------------------------------//
+    //----------------------SEGUNDA PARTE TP---------------------------------------------------------------//
       
       //Servicio4
-      int tiempoMaxNoRefrigerado = 200;
+      int tiempoMaxNoRefrigerado = 80;
       System.out.println("\nServicio 4: Backtracking: Solucion Obtenida");
       serv.servicio4(tiempoMaxNoRefrigerado);
 	  
@@ -39,31 +38,6 @@ public class Main {
      
     }
  //--------------------------PARA IMPRIMIR------------------------------------------------------------//
-=======
-     //------------------------SEGUNDA PARTE TP ---------------------------------------------------//
-      int tiempoMaxNoRefrigerado = 60;
-
-      Backtracking backtraking = new Backtracking("./src/tpe/datasets/Procesadores.csv","./src/tpe/datasets/Tareas.csv" , tiempoMaxNoRefrigerado);
-      Map<Processor, List<MyTask>> resultadoBack = backtraking.asignarTareasBacktraking();
-      
-      System.out.println("\nBacktracking: Solucion Obtenida");
-      imprimirAsignacion(resultadoBack);
-      System.out.println("Tiempo máximo de ejecución Backtracking: " + backtraking.getMejorTiempo());
-      System.out.println("Estados generados: " + backtraking.getEstadosGenerados());
-      
-      Greedy greedy = new Greedy ("./src/tpe/datasets/Procesadores.csv","./src/tpe/datasets/Tareas.csv" , tiempoMaxNoRefrigerado);
-      Map<Processor, List<MyTask>> resultadogreedy = greedy.asignarTareasGreedy();
-      
-      System.out.println("\nGreedy: Solucion Obtenida");
-      imprimirAsignacion(resultadogreedy);
-      System.out.println("Tiempo máximo de ejecución Greedy: " + greedy.getMejorTiempo());
-      System.out.println("Candidatos considerados: " + greedy.getCandidatosConsiderados());
-   
-    }
-    
-    
-    //--------------------------PARA IMPRIMIR------------------------------------------------------------//
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
     
     
     public static String datosTarea (MyTask tarea) {
@@ -81,28 +55,4 @@ public class Main {
 	 }
     
     
-<<<<<<< HEAD
-=======
-    public static void imprimirAsignacion(Map<Processor, List<MyTask>> asignacion) {
-       for (Map.Entry<Processor, List<MyTask>> entry : asignacion.entrySet()) {
-        Processor procesador = entry.getKey();
-            List<MyTask> tareas = entry.getValue();
-            System.out.println("Procesador: " + procesador.getId());
-            
-           if (tareas.isEmpty()) {
-                System.out.println("  No tiene tareas asignadas.");
-           } else {
-               System.out.print("  Tareas asignadas: ");
-               for (MyTask tarea : tareas) {
-                    System.out.print(tarea.getId() + " ");
-               }
-                System.out.println(); 
-            }
-           System.out.println(); 
-       }
-   }
-    
-	
-    
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
 }

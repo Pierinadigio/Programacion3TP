@@ -4,149 +4,63 @@ import java.util.*;
 import tpe.utils.CSVReader;
 
 	/**Estrategia de Backtracking
-	La estrategia de backtracking explora exhaustivamente todas las posibles asignaciones de tareas a los procesadores. 
-	En cada paso, se verifica si una tarea puede ser asignada a un procesador sin violar las restricciones. 
-	Si todas las tareas han sido asignadas, se evalúa la calidad de la solución obtenida y se actualiza la mejor asignación si es necesario. 
-	El algoritmo continúa probando todas las combinaciones posibles, deshaciendo cada asignación (backtrack) para probar la siguiente posibilidad.
-	Esta estrategia garantiza encontrar la solución óptima, pero puede ser computacionalmente costosa debido a la exploración exhaustiva de todas las combinaciones posibles, 
-	especialmente cuando el número de tareas y procesadores es grande. 
-	La métrica de "estados generados" proporciona una medida del costo computacional de la solución.
+	La estrategia de backtracking explora todas las posibles combinaciones de asignación de tareas a procesadores, 
+	utilizando el objeto Estado para mantener el estado actual de la asignación. 
+	Se aplican condiciones de poda para evitar explorar soluciones que no pueden conducir a una mejora sobre la mejor solución 
+	encontrada hasta el momento (mejorSolucion). El objetivo es encontrar la asignación de tareas que minimice el tiempo total de ejecución, 
+	cumpliendo con las restricciones definidas..
 	**/
 
 public class Backtracking {
-	private List<MyTask> tareas;
-    private List<Processor> procesadores;
-    private Map<Processor, List<MyTask>> solucion;
-    private int mejorTiempo;
+	private LinkedList<MyTask> tareas;
+	private HashMap<String, Processor> processors;
+    private Solucion mejorSolucion;
     private int tiempoMaxNoRefrigerado;
-    private int estadosGenerados;
     private int maxCriticas;
    
-    public Backtracking(String pathProcesadores, String pathTareas, int tiempoMaxNoRefrigerado) {
-    	CSVReader reader = new CSVReader();
-		reader.readProcessors(pathProcesadores);
-		reader.readTasks(pathTareas);
-		this.tareas = new ArrayList<>(reader.getTasks().values());
-		this.procesadores = new ArrayList<>(reader.getProcessors().values());
-        this.tiempoMaxNoRefrigerado = tiempoMaxNoRefrigerado;
-        this.mejorTiempo = Integer.MAX_VALUE;
-        this.solucion = new HashMap<>();
-        this.estadosGenerados = 0;
-        this.maxCriticas = 2;
+    public Backtracking(HashMap<String, Processor> processors, HashMap<String, MyTask>tareas, Integer tiempoMaxNoRefrigerado,int maxCriticas) {
+    	this.tareas = new LinkedList<MyTask>(tareas.values());
+		this.processors = processors;
+		this.tiempoMaxNoRefrigerado = tiempoMaxNoRefrigerado;
+        this.mejorSolucion = null;;
+        this.maxCriticas = maxCriticas;
        
     }
     
-    public Map<Processor, List<MyTask>> asignarTareasBacktraking() {
-    	Map<Processor, List<MyTask>> asignacionActual = new HashMap<>();
-    	for (Processor p : procesadores) {
-        	asignacionActual.put(p, new ArrayList<>());
+    public Solucion asignarTareasBacktraking() {
+        Estado estadoInicial = new Estado(processors);
+        asignarTareasBacktraking(estadoInicial, tareas);
+        if (mejorSolucion == null) {
+            return null;
         }
-<<<<<<< HEAD
-       _asignarTareasBacktraking(asignacionActual, 0);
-            return solucion;
+        this.mejorSolucion.setEstadosGenerados(estadoInicial.getEstadosGenerados());
+        return mejorSolucion; 
     }
 
-    private void _asignarTareasBacktraking(Map<Processor, List<MyTask>> asignacionActual, int index) {
-        
-        if (index == tareas.size()) {
-=======
-       _asignarTareasBacktraking(asignacionActual, tareas);
-            return solucion;
-    }
-
-    private void _asignarTareasBacktraking(Map<Processor, List<MyTask>> asignacionActual, List<MyTask> tareas) {
-        
-        if (tareas.isEmpty()) {
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
-            int tiempoActual = calcularTiempoMaximo(asignacionActual);
-            if (tiempoActual < mejorTiempo) {
-                mejorTiempo = tiempoActual;
-                solucion = copiarAsignacion(asignacionActual);
-            }
-        } else {
-<<<<<<< HEAD
-            MyTask tarea = tareas.get(index);
-=======
-            MyTask tarea = tareas.remove(0);
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
-            for (Processor p : procesadores) {
-                if (esValida(tarea, asignacionActual, p) ){
-                    asignacionActual.get(p).add(tarea);
-                    estadosGenerados++; 
-<<<<<<< HEAD
-                    _asignarTareasBacktraking(asignacionActual, index + 1);
-                    asignacionActual.get(p).remove(asignacionActual.get(p).size() - 1);
-                }
-            }
-=======
-                    _asignarTareasBacktraking(asignacionActual, tareas);
-                    asignacionActual.get(p).remove(asignacionActual.get(p).size() - 1);
-                }
-            }
-            tareas.add(0,tarea);
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
+    private void asignarTareasBacktraking(Estado estado, LinkedList<MyTask> tareasDisponibles) {
+        if(tareas.size()== 0){ //Es una posible solucion, ahora tengo que ir guardando la mejor solucion
+        	if(this.mejorSolucion == null || estado.getTiempoFinalEjecucion()< this.mejorSolucion.getTiempoFinalEjecucion()) {
+        		this.mejorSolucion = new Solucion(estado);
+        	}
         }
-    }
-   
-    private boolean esValida(MyTask tarea, Map<Processor, List<MyTask>> asignacion, Processor p) {
-<<<<<<< HEAD
-        int countCritica = 0;
-        int tiempoTotal = 0;
-        for (MyTask t : asignacion.get(p)) {
-            if (t.isCritica()) {
-                countCritica++;
-            }
-            tiempoTotal += t.getTiempoEjecucion();
-        }
-        if (tarea.isCritica() && countCritica >= maxCriticas ) {
-            return false;
-        }
-        if (!p.isRefrigerado() && (tiempoTotal + tarea.getTiempoEjecucion() > tiempoMaxNoRefrigerado)) {
-            return false;
-        }
-        return true;
-    }    
-=======
-        int tiempoTotal = p.getTiempoTotalEjecucion(asignacion.get(p));
-    
-         if (tarea.isCritica() && p.hasCriticalTask(maxCriticas) ) {
-             return false;
-         }
-         if (!p.isRefrigerado() && (tiempoTotal + tarea.getTiempoEjecucion() > tiempoMaxNoRefrigerado)) {
-             return false;
-         }
-         return true;
-     }    
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
-    
-    private Map<Processor, List<MyTask>> copiarAsignacion(Map<Processor, List<MyTask>> original) {
-        Map<Processor, List<MyTask>> copia = new HashMap<>();
-        for (Map.Entry<Processor, List<MyTask>> entry : original.entrySet()) {
-            Processor procesador = entry.getKey();
-            List<MyTask> tareasOriginales = entry.getValue();
-            List<MyTask> tareasCopia = new ArrayList<>(tareasOriginales); 
-            copia.put(procesador, tareasCopia);
-        }
-        return copia;
-    }
-    
-    public int calcularTiempoMaximo(Map<Processor, List<MyTask>> asignacion) {
-        int maxTiempo = 0;
-        for (Map.Entry<Processor, List<MyTask>> entry : asignacion.entrySet()) {
-           	int totalTiempo = entry.getKey().getTiempoTotalEjecucion(entry.getValue());
-        	  if (totalTiempo > maxTiempo) {
-            	maxTiempo = totalTiempo;
+        else{
+            Iterator<String> it = estado.iteratorProcesadores();  
+            while(it.hasNext()) {
+            	String procesador = it.next(); 
+            	MyTask t = tareas.removeFirst();             		
+            	Integer tiempoFinalAnterior = estado.getTiempoFinalEjecucion(); 
+				estado.addTarea(procesador,t); //Se actualiza el estado
+				//Poda
+				if((estado.countCriticas(procesador)<=maxCriticas) && 
+                (this.mejorSolucion == null || (estado.getTiempoFinalEjecucion()< this.mejorSolucion.getTiempoFinalEjecucion())) && 
+                ((!estado.esRefrigerado(procesador) && estado.getTiempoProcesador(procesador)<= tiempoMaxNoRefrigerado) || estado.esRefrigerado(procesador))) {
+					estado.incrementarEstados();
+					asignarTareasBacktraking(estado, tareasDisponibles); 
+				}
+				tareas.addFirst(t);
+				estado.removeTarea(procesador,tiempoFinalAnterior);
             }
         }
-        return maxTiempo;
-    }
- 
-    public int getEstadosGenerados() {
-        return estadosGenerados;
-    }
-
-    public int getMejorTiempo() {
-        return mejorTiempo;
     }
 }
 

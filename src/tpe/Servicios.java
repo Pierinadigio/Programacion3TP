@@ -9,6 +9,10 @@ public class Servicios {
 	private List<MyTask> criticalTasks;
     private List<MyTask> nonCriticalTasks;
 	private ArbolTareas tareasPorPrioridad;
+	private HashMap<String, Processor> processors;
+	private List<MyTask> tareas;
+	
+	private final int maxCriticas = 2;
 		
 	public Servicios(String pathProcesadores, String pathTareas) {
 		CSVReader reader = new CSVReader();
@@ -18,6 +22,10 @@ public class Servicios {
 		this.criticalTasks = reader.getCriticalTasks();
         this.nonCriticalTasks = reader.getNonCriticalTasks();
 		this.tareasPorPrioridad = reader.getTareasPorPrioridad();
+		this.processors = reader.getProcessors();
+		this.tareas = reader.getTareasPorPrioridad().getTasksInPriorityOrder();
+		
+		
 	}
   /**---------------------------------CONSTRUCTOR-----------------------------------------------*//**
  * Lectura de archivos CSV: La complejidad temporal de la lectura de archivos depende del tamaño de los archivos y del rendimiento de la operación de lectura de archivos 
@@ -73,7 +81,39 @@ public class Servicios {
 	  */
 	 	  
 	 
-		  
-	
+	 /**-------------------------------SERVICIO 4-----------------------------------------------*/  
+	 
+	 public void servicio4(int tiempoMaxNoRefrigerado){   //Servicio que se encarga de asignar las tareas a los procesadores usando backtracking
+			
+			if(servicio2(true).size() > processors.size() * maxCriticas) { //Si la cantidad de tareas criticas es mayor a la cantidad de procesadores, no se puede asignar
+				System.out.println("No se puede asignar las tareas a los procesadores");
+			}
+			else {
+				Backtracking back = new Backtracking(processors, tasks, tiempoMaxNoRefrigerado, maxCriticas);
+
+				Solucion solucion = back.asignarTareasBacktraking();	
+				if(solucion == null)	//si viene null, hay alguna tarea que no se pudo asignar a ningún procesador (por ejemplo, todos procesadores no refrigerados y tarea con tiempoEj > tiempo dado por el usuario)
+					System.out.println("No hay Solucion");
+				else
+				System.out.println(solucion);
+			}
+		}
+	 
+	 /**-------------------------------SERVICIO 5-----------------------------------------------*/
+	 public void servicio5(int tiempoMaxNoRefrigerado){   //Servicio que se encarga de asignar las tareas a los procesadores usando greedy
+			if(servicio2(true).size() > processors.size() * maxCriticas) { //Si la cantidad de tareas criticas es mayor a la cantidad de procesadores, no se puede asignar
+				System.out.println("No se puede asignar las tareas a los procesadores");
+			}
+			else {
+				Greedy greedy = new Greedy(processors, tareas, tiempoMaxNoRefrigerado, maxCriticas);
+				Solucion solucion = greedy.asignarTareasGreedy();
+				if(solucion == null)  //si viene null, hay alguna tarea que no se pudo asignar a ningún procesador (por ejemplo, todos procesadores no refrigerados y tarea con tiempoEj > tiempo dado por el usuario)
+					System.out.println("No hay Solucion");
+				else
+				System.out.println(solucion);
+			}
+		}
+
+
 }
 	

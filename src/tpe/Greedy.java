@@ -5,118 +5,70 @@ import tpe.utils.CSVReader;
 /**
  * La estrategia Greedy utilizada en este problema se basa en asignar cada tarea al procesador que causará el menor incremento 
  * en el tiempo total de ejecución, asegurando que se cumplan las restricciones de criticidad y refrigeración. 
- * Este enfoque proporciona una solución rápida y razonablemente buena, aunque no garantiza la solución óptima global.
-
+ * El algoritmo intenta maximizar la eficiencia seleccionando la tarea más grande disponible y asignándola al procesador más adecuado en cada iteración, 
+ * buscando así una solución rápida aunque no necesariamente óptima globalmente.
+ * Este enfoque proporciona una solución rápida y razonablemente buena.
  */
 public class Greedy {
-    private List<MyTask> tareas;
-    private List<Processor> procesadores;
-    private Map<Processor, List<MyTask>> solucion;
-    private int tiempoMaxNoRefrigerado;
-    private int candidatosConsiderados;
-    private int mejorTiempo;
-<<<<<<< HEAD
-=======
+    private LinkedList<MyTask> tareas;
+    private HashMap<String, Processor> processors;
+    private Integer tiempoMaxNoRefrigerado;
+    private Solucion solucion;
     private int maxCriticas;
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
 
-    public Greedy(String pathProcesadores, String pathTareas, int tiempoMaxNoRefrigerado) {
-        CSVReader reader = new CSVReader();
-        reader.readProcessors(pathProcesadores);
-        reader.readTasks(pathTareas);
-        this.procesadores = new ArrayList<>(reader.getProcessors().values());
-        this.tareas = reader.getTareasPorPrioridad().getTasksInPriorityOrder();
+    public Greedy(HashMap<String, Processor> processors, List<MyTask> tareas, Integer tiempoMaxNoRefrigerado, int maxCriticas) {
+        this.tareas= new LinkedList<>(tareas);
         this.tiempoMaxNoRefrigerado = tiempoMaxNoRefrigerado;
-        this.candidatosConsiderados = 0;
-<<<<<<< HEAD
-=======
-        this.maxCriticas = 2;
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
-        this.mejorTiempo = Integer.MAX_VALUE;
-        this.solucion = new HashMap<>();
-        for (Processor p : procesadores) {
-            solucion.put(p, new ArrayList<>());
-        }
+        this.solucion = null;
+        this.processors = processors;
+        this.maxCriticas = maxCriticas;
     }
 
-    public Map<Processor, List<MyTask>> asignarTareasGreedy() {
-        for (MyTask task : tareas) {
-            Processor bestProcessor = null;
-            int minIncrement = Integer.MAX_VALUE;
-
-          for (Processor processor : procesadores) {
-            	if (esValida(processor, task, tiempoMaxNoRefrigerado)) {
-                    int originalTime = processor.getTiempoTotalEjecucion();
-                    processor.addTask(task);
-                    int newTime = processor.getTiempoTotalEjecucion();
-                    processor.removeTask(task);
-
-                    int increment = newTime - originalTime;
-                    if (increment < minIncrement) {
-                        minIncrement = increment;
-                        bestProcessor = processor;
-                    }
-                }
-            }
-
-            if (bestProcessor != null) {
-                bestProcessor.addTask(task);
-                solucion.get(bestProcessor).add(task);
-                candidatosConsiderados++;
-            }
-        }
-
-        int maxExecutionTime = calculateMaxExecutionTime(solucion);
-        if (maxExecutionTime < mejorTiempo) {
-            mejorTiempo = maxExecutionTime;
-            solucion = cloneProcessors(solucion);
-        }
-
+    public Solucion asignarTareasGreedy() {
+        Estado estadoInicial = new Estado(processors);
+        return asignarTareasGreedy(estadoInicial, tareas);
+    }
+    
+    private Solucion asignarTareasGreedy(Estado estado, List<MyTask> tareas){
+        while(!tareas.isEmpty()){
+            MyTask tarea = tareas.remove(0);
+            Processor procesador = getBestProcessor(estado, tarea); 
+            if (procesador == null){
+                return null;
+            }           
+            estado.addTarea(procesador.getId(), tarea);
+        }                                                 
+        this.solucion = new Solucion(estado);
+        this.solucion.setEstadosGenerados(estado.getEstadosGenerados());
         return solucion;
     }
 
-    private boolean esValida(Processor processor, MyTask task, int X) {
-        if (!processor.isRefrigerado() && processor.getTiempoTotalEjecucion() + task.getTiempoEjecucion() > X) {
-            return false;
-        }
-<<<<<<< HEAD
-        if (task.isCritica() && processor.hasCriticalTask()) {
-=======
-        if (task.isCritica() && processor.hasCriticalTask(maxCriticas)) {
->>>>>>> 58d387803bde6e3ff4b11f589d820e5b76d782f7
-            return false;
-        }
-        return true;
+    public boolean esSolucion(Estado e) {
+        return e.getTiempoFinalEjecucion() < this.solucion.getTiempoFinalEjecucion();
     }
 
-    private int calculateMaxExecutionTime(Map<Processor, List<MyTask>> asignacion) {
-        int maxTime = 0;
-        for (Processor processor : asignacion.keySet()) {
-            int tiempo = 0;
-            for (MyTask task : asignacion.get(processor)) {
-                tiempo += task.getTiempoEjecucion();
-            }
-            if (tiempo > maxTime) {
-                maxTime = tiempo;
+    private Processor getBestProcessor(Estado estado, MyTask tarea) {
+        HashMap<String,Processor> procesadores = estado.getProcesadores();
+        Processor bestProcessor = null;
+        Iterator<String> it = estado.iteratorProcesadores();
+        while(it.hasNext()){
+            String id = it.next();
+            estado.incrementarEstados(); 
+            Processor processor = procesadores.get(id);
+            if (puedeProcesarTarea(estado, id, tarea)){
+                if (bestProcessor == null || processor.getTiempoEjecucion() < bestProcessor.getTiempoEjecucion()){
+                	bestProcessor = processor;
+                }
             }
         }
-        return maxTime;
+        return bestProcessor;        
     }
 
-    private Map<Processor, List<MyTask>> cloneProcessors(Map<Processor, List<MyTask>> processors) {
-        Map<Processor, List<MyTask>> clonedProcessors = new HashMap<>();
-        for (Processor processor : processors.keySet()) {
-            List<MyTask> clonedTasks = new ArrayList<>(processors.get(processor));
-            clonedProcessors.put(processor, clonedTasks);
-        }
-        return clonedProcessors;
-    }
-
-    public int getCandidatosConsiderados() {
-        return candidatosConsiderados;
-    }
-
-    public int getMejorTiempo() {
-        return mejorTiempo;
+    private boolean puedeProcesarTarea(Estado estado, String idProcesador, MyTask tarea){
+    	int cant = estado.countCriticas(idProcesador);
+        return (cant<maxCriticas || (!tarea.isCritica() && cant == maxCriticas)) && 
+                    (estado.esRefrigerado(idProcesador) || 
+                    (!estado.esRefrigerado(idProcesador) && estado.getTiempoProcesador(idProcesador) + tarea.getTiempoEjecucion()<= tiempoMaxNoRefrigerado ));
     }
 }
+
